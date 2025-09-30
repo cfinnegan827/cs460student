@@ -29,6 +29,7 @@
       var renderer, controls, scene, camera, LASTOBJECT;
       var placing = false;
       var FLICKERING = false;
+      var WIREFRAME = false;
 
       window.onload = function() {
 
@@ -79,8 +80,12 @@
 
             // console.log('Ray to Invisible Plane', intersects[0].point);
             //create specs for new knot
-            var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 ); 
-            var material = new THREE.MeshStandardMaterial( { color: 0xff69b4 } ); 
+            var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+            if(WIREFRAME){
+                var material = new THREE.MeshStandardMaterial( { color: 0xff69b4, wireframe: true } ); 
+            } else{
+                var material = new THREE.MeshStandardMaterial( { color: 0xff69b4 } ); 
+            }
             var newTorusKnot = new THREE.Mesh( geometry, material ); 
             LASTOBJECT = newTorusKnot;
             scene.add( newTorusKnot );
@@ -116,6 +121,28 @@
             }
             else if(e.key == 'f' && FLICKERING == true){
                 FLICKERING = false;
+            }
+            else if(e.key == 'w' && WIREFRAME == false){
+                WIREFRAME = true;
+                scene.traverse(function(obj) {
+                //https://threejs.org/docs/#api/en/objects/Mesh.geometry
+                //checks wethere an object is geomteyry ex has mesh and material since
+                //lights and planes etc count as objects
+                if(obj.isMesh && obj.material){
+                    obj.material.wireframe = true;
+                }
+            })
+            }
+            else if(e.key == 'w' && WIREFRAME == true){
+                WIREFRAME = false;
+                scene.traverse(function(obj) {
+                //https://threejs.org/docs/#api/en/objects/Mesh.geometry
+                //checks wethere an object is geomteyry ex has mesh and material since
+                //lights and planes etc count as objects
+                if(obj.isMesh && obj.material){
+                    obj.material.wireframe = false;
+                }
+            })
             }
         }
 
