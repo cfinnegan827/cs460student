@@ -6,14 +6,21 @@
     <style>
       html, body { 
         /* background-color:#000; */
-        background: url('https://cs460.org/assignments/04/bg.jpg');
+        /* background: url('https://cs460.org/assignments/04/bg.jpg'); */
         background-size: cover;
         margin: 0;
         padding: 0;
         height: 100%;
         overflow: hidden !important;  
       }
-
+      #coral-reef{
+        position: fixed;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
       #c {
         width: 100%;
         height: 100%;
@@ -179,10 +186,26 @@
 
     };
 
+    
     var step_x = .01;
     var step_y = .01;
     var direction = -1;
 
+    //keeps track of the x,y,direction of the red fish
+    var red_fish_offset = [0,0];
+
+    window.onkeypress = function(e) {
+      var move_scale = 0.05;
+      if(e.key == 'a'){
+        red_fish_offset[0]+= move_scale;
+      } else if(e.key == 'd'){
+        red_fish_offset[0] -= move_scale;
+      } else if(e.key == 'w'){
+        red_fish_offset[1] += move_scale;
+      } else if(e.key == 's'){
+        red_fish_offset[1] -= move_scale;
+      }
+    }
     function animate() {
 
       requestAnimationFrame(animate);
@@ -204,10 +227,15 @@
         var current_scale = current_buffers[5];
         var current_direction = current_buffers[6]
 
+        if(r == 0){
+          current_offset[0] = red_fish_offset[0];
+          current_offset[1] = red_fish_offset[1];
+        } else{
         // update offsets
         current_offset[0] += 0.01;
         current_offset[1] += 0.1*Math.random();
         current_offset[1] -= 0.1*Math.random();
+        }
         if(current_offset[0] >= 1){
             current_direction = -1;
         }
@@ -291,6 +319,9 @@
 
   </script>
   <body>
+    <video autoplay muted loop id="coral-reef">
+      <source src="coral-reef.mp4" type="video/mp4">
+    </video>
     <canvas id="c"></canvas>
   </body>
 </html>
