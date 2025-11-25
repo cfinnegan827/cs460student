@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <style>
+        html, body { 
+            background-color:#000;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden !important;  
+        }
+        canvas{
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src=" https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.min.js"></script>
+        <script type="module">
+            var canvas = document.getElementById('canvas');
+            let engine = new BABYLON.WebGPUEngine(canvas, { antialiasing: true });
+            await engine.initAsync();
+            const scene = new BABYLON.Scene(engine);
+            await BABYLON.SceneLoader.AppendAsync('', 'poly.glb', scene);
+            const new_material = new BABYLON.PBRMaterial("new_material", scene);
+            new_material.albedoColor = new BABYLON.Color3(1.0, 0.85, 0.4);
+            new_material.metallic = 1.0;
+            new_material.roughness = 0.2;
+            new_material.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+            new_material.reflectivityColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+            scene.meshes.forEach(mesh => {
+                if(mesh.material){
+                    mesh.material = new_material;
+                }
+            });
+            scene.createDefaultCameraOrLight(true, true, true);
+            scene.activeCamera.attachControl(canvas, true);
+            engine.runRenderLoop(() => scene.render());
+            addEventListener('resize', () => engine.resize());
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>
